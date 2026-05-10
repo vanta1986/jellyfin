@@ -50,12 +50,11 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libexiv2-27 \
     liblttng-ust1 \
     libcurl4 \
-    libfontconfig1.0 \
+    libfontconfig1 \
     libfreetype6 \
     libssl3 \
     sudo \
     mesa-va-drivers \
-    libva-glx2 \
     libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
 
