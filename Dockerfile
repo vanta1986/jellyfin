@@ -9,31 +9,31 @@ WORKDIR /src
 COPY Directory.Build.props Directory.Packages.props ./
 COPY Emby.Naming Emby.Naming/
 COPY Emby.Photos Emby.Photos/
-COPY Jellyfin.Data Jellyfin.Data/
-COPY Jellyfin.Api Jellyfin.Api/
-COPY Jellyfin.Server Jellyfin.Server/
-COPY Jellyfin.Server.Implementations Jellyfin.Server.Implementations/
-COPY MediaBrowser.Common MediaBrowser.Common/
-COPY MediaBrowser.Controller MediaBrowser.Controller/
-COPY MediaBrowser.LocalMetadata MediaBrowser.LocalMetadata/
-COPY MediaBrowser.MediaEncoding MediaBrowser.MediaEncoding/
-COPY MediaBrowser.Model MediaBrowser.Model/
-COPY MediaBrowser.Providers MediaBrowser.Providers/
-COPY MediaBrowser.XbmcMetadata MediaBrowser.XbmcMetadata/
-COPY Jellyfin.CodeAnalysis Jellyfin.CodeAnalysis/
-COPY Jellyfin.Database Jellyfin.Database/
-COPY Jellyfin.Drawing.Skia Jellyfin.Drawing.Skia/
-COPY Jellyfin.Drawing Jellyfin.Drawing/
-COPY Jellyfin.Extensions Jellyfin.Extensions/
-COPY Jellyfin.LiveTv Jellyfin.LiveTv/
-COPY Jellyfin.MediaEncoding.Hls Jellyfin.MediaEncoding.Hls/
-COPY Jellyfin.MediaEncoding.Keyframes Jellyfin.MediaEncoding.Keyframes/
-COPY Jellyfin.Networking Jellyfin.Networking/
+COPY src/Jellyfin.Data src/Jellyfin.Data/
+COPY src/Jellyfin.Api src/Jellyfin.Api/
+COPY src/Jellyfin.Server src/Jellyfin.Server/
+COPY src/Jellyfin.Server.Implementations src/Jellyfin.Server.Implementations/
+COPY src/MediaBrowser.Common src/MediaBrowser.Common/
+COPY src/MediaBrowser.Controller src/MediaBrowser.Controller/
+COPY src/MediaBrowser.LocalMetadata src/MediaBrowser.LocalMetadata/
+COPY src/MediaBrowser.MediaEncoding src/MediaBrowser.MediaEncoding/
+COPY src/MediaBrowser.Model src/MediaBrowser.Model/
+COPY src/MediaBrowser.Providers src/MediaBrowser.Providers/
+COPY src/MediaBrowser.XbmcMetadata src/MediaBrowser.XbmcMetadata/
+COPY src/Jellyfin.CodeAnalysis src/Jellyfin.CodeAnalysis/
+COPY src/Jellyfin.Database src/Jellyfin.Database/
+COPY src/Jellyfin.Drawing.Skia src/Jellyfin.Drawing.Skia/
+COPY src/Jellyfin.Drawing src/Jellyfin.Drawing/
+COPY src/Jellyfin.Extensions src/Jellyfin.Extensions/
+COPY src/Jellyfin.LiveTv src/Jellyfin.LiveTv/
+COPY src/Jellyfin.MediaEncoding.Hls src/Jellyfin.MediaEncoding.Hls/
+COPY src/Jellyfin.MediaEncoding.Keyframes src/Jellyfin.MediaEncoding.Keyframes/
+COPY src/Jellyfin.Networking src/Jellyfin.Networking/
 COPY Jellyfin.sln ./
 
 # Build
 RUN dotnet restore Jellyfin.sln && \
-    dotnet publish Jellyfin.Server -c Release -o /app/publish --no-restore
+    dotnet publish src/Jellyfin.Server/Jellyfin.Server.csproj -c Release -o /app/publish --no-restore
 
 # Runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
