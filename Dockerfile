@@ -29,6 +29,7 @@ COPY src/Jellyfin.LiveTv src/Jellyfin.LiveTv/
 COPY src/Jellyfin.MediaEncoding.Hls src/Jellyfin.MediaEncoding.Hls/
 COPY src/Jellyfin.MediaEncoding.Keyframes src/Jellyfin.MediaEncoding.Keyframes/
 COPY src/Jellyfin.Networking src/Jellyfin.Networking/
+COPY tests tests/
 COPY Jellyfin.sln ./
 
 # Build
