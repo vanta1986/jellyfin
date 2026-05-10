@@ -9,6 +9,10 @@ on:
       - master
   workflow_dispatch:
 
+permissions:
+  packages: write
+  contents: read
+
 env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository_owner }}/jellyfin
