@@ -5,32 +5,8 @@ FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
 
 WORKDIR /src
 
-# Copy solution and project files first for better layer caching
-COPY Directory.Build.props Directory.Packages.props ./
-COPY Emby.Naming Emby.Naming/
-COPY Emby.Photos Emby.Photos/
-COPY Jellyfin.Data Jellyfin.Data/
-COPY Jellyfin.Api Jellyfin.Api/
-COPY Jellyfin.Server Jellyfin.Server/
-COPY Jellyfin.Server.Implementations Jellyfin.Server.Implementations/
-COPY MediaBrowser.Common MediaBrowser.Common/
-COPY MediaBrowser.Controller MediaBrowser.Controller/
-COPY MediaBrowser.LocalMetadata MediaBrowser.LocalMetadata/
-COPY MediaBrowser.MediaEncoding MediaBrowser.MediaEncoding/
-COPY MediaBrowser.Model MediaBrowser.Model/
-COPY MediaBrowser.Providers MediaBrowser.Providers/
-COPY MediaBrowser.XbmcMetadata MediaBrowser.XbmcMetadata/
-COPY src/Jellyfin.CodeAnalysis src/Jellyfin.CodeAnalysis/
-COPY src/Jellyfin.Database src/Jellyfin.Database/
-COPY src/Jellyfin.Drawing.Skia src/Jellyfin.Drawing.Skia/
-COPY src/Jellyfin.Drawing src/Jellyfin.Drawing/
-COPY src/Jellyfin.Extensions src/Jellyfin.Extensions/
-COPY src/Jellyfin.LiveTv src/Jellyfin.LiveTv/
-COPY src/Jellyfin.MediaEncoding.Hls src/Jellyfin.MediaEncoding.Hls/
-COPY src/Jellyfin.MediaEncoding.Keyframes src/Jellyfin.MediaEncoding.Keyframes/
-COPY src/Jellyfin.Networking src/Jellyfin.Networking/
-COPY tests tests/
-COPY Jellyfin.sln ./
+# Copy everything
+COPY . ./
 
 # Build
 RUN dotnet restore Jellyfin.sln && \
