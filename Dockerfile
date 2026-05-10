@@ -8,19 +8,17 @@ WORKDIR /src
 # Copy everything
 COPY . ./
 
-# Build
+# Build - self-contained so runtime doesn't need SDK
 RUN dotnet restore Jellyfin.sln && \
-    dotnet publish Jellyfin.Server/Jellyfin.Server.csproj -c Release -o /app/publish --no-restore
+    dotnet publish Jellyfin.Server/Jellyfin.Server.csproj -c Release -r linux-x64 --self-contained true -o /app/publish --no-restore
 
 # Runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+FROM ubuntu:22.04 AS runtime
 
-# Install dependencies for hardware acceleration
+# Install dependencies for hardware acceleration and .NET runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    intel-media-va-driver \
     libva2 \
     libva-drm2 \
-    intel-gpu-tools \
     libdrm2 \
     libxml2 \
     libxslt1.1 \
@@ -30,10 +28,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libfontconfig1 \
     libfreetype6 \
     libssl3 \
-    sudo \
     mesa-va-drivers \
     libgl1-mesa-glx \
+    wget \
     && rm -rf /var/lib/apt/lists/*
+
+# Install .NET runtime
+RUN wget https://dotnetcli.azureedge.net/dotnet/Runtime/9.0.0/dotnet-runtime-9.0.0-linux-x64.tar.gz -O /tmp/dotnet-runtime.tar.gz && \
+    mkdir -p /usr/share/dotnet && \
+    tar -xf /tmp/dotnet-runtime.tar.gz -C /usr/share/dotnet && \
+    ln -s /usr/share/dotnet/dotnet /usr/bin/dotnet && \
+    rm /tmp/dotnet-runtime.tar.gz
 
 # Create jellyfin user
 RUN groupadd -r jellyfin && useradd -r -g jellyfin jellyfin
