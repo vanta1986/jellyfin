@@ -55,9 +55,7 @@ jobs:
           context: .
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/jellyfin:amd64
-            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.sha }}-amd64
+          tags: ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.sha }}-amd64
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -70,9 +68,7 @@ jobs:
           context: .
           platforms: linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
-          tags: |
-            ghcr.io/${{ github.repository_owner }}/jellyfin:arm64
-            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.sha }}-arm64
+          tags: ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.sha }}-arm64
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -96,6 +92,6 @@ jobs:
         run: |
           docker manifest rm ghcr.io/${{ github.repository_owner }}/jellyfin:latest 2>/dev/null || true
           docker manifest create ghcr.io/${{ github.repository_owner }}/jellyfin:latest \
-            ghcr.io/${{ github.repository_owner }}/jellyfin:amd64 \
-            ghcr.io/${{ github.repository_owner }}/jellyfin:arm64
+            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.sha }}-amd64 \
+            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.sha }}-arm64
           docker manifest push ghcr.io/${{ github.repository_owner }}/jellyfin:latest
