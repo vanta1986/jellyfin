@@ -56,10 +56,8 @@ jobs:
           platforms: linux/amd64
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/jellyfin:master
-            ghcr.io/${{ github.repository_owner }}/jellyfin:latest
-            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.event.pull_request.head.sha || github.sha }}
-            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.event.pull_request.head.sha || github.sha }}-amd64
+            ghcr.io/${{ github.repository_owner }}/jellyfin:amd64
+            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.sha }}-amd64
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -73,10 +71,8 @@ jobs:
           platforms: linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: |
-            ghcr.io/${{ github.repository_owner }}/jellyfin:master
-            ghcr.io/${{ github.repository_owner }}/jellyfin:latest
-            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.event.pull_request.head.sha || github.sha }}
-            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.event.pull_request.head.sha || github.sha }}-arm64
+            ghcr.io/${{ github.repository_owner }}/jellyfin:arm64
+            ghcr.io/${{ github.repository_owner }}/jellyfin:${{ github.sha }}-arm64
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -100,6 +96,6 @@ jobs:
         run: |
           docker manifest rm ghcr.io/${{ github.repository_owner }}/jellyfin:latest 2>/dev/null || true
           docker manifest create ghcr.io/${{ github.repository_owner }}/jellyfin:latest \
-            ghcr.io/${{ github.repository_owner }}/jellyfin:latest-amd64 \
-            ghcr.io/${{ github.repository_owner }}/jellyfin:latest-arm64
+            ghcr.io/${{ github.repository_owner }}/jellyfin:amd64 \
+            ghcr.io/${{ github.repository_owner }}/jellyfin:arm64
           docker manifest push ghcr.io/${{ github.repository_owner }}/jellyfin:latest
