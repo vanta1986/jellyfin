@@ -14,4 +14,4 @@ RUN mkdir -p /cache && chown -R jellyfin:jellyfin /config /cache
 USER jellyfin
 EXPOSE 8096 8920
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD curl -f http://localhost:8096/health || exit 1
-ENTRYPOINT ["dotnet", "Jellyfin.Server.dll"]
+ENTRYPOINT ["dotnet", "jellyfin.dll"]
