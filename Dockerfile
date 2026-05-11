@@ -6,7 +6,22 @@ COPY . ./
 RUN dotnet restore Jellyfin.sln && dotnet publish Jellyfin.Server/Jellyfin.Server.csproj -c Release -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
-RUN apt-get update && apt-get install -y --no-install-recommends libva2 libva-drm2 libdrm2 libxml2 libxslt1.1 libexiv2-27 liblttng-ust1 libcurl4 libfontconfig1 libfreetype6 libssl3 mesa-va-drivers libgl1-mesa-glx && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ffmpeg \
+    libva2 \
+    libva-drm2 \
+    libdrm2 \
+    libxml2 \
+    libxslt1.1 \
+    libexiv2-27 \
+    liblttng-ust1 \
+    libcurl4 \
+    libfontconfig1 \
+    libfreetype6 \
+    libssl3 \
+    mesa-va-drivers \
+    libgl1-mesa-glx \
+    && rm -rf /var/lib/apt/lists/*
 RUN groupadd -r jellyfin && useradd -r -g jellyfin jellyfin
 WORKDIR /config
 COPY --from=builder /app/publish ./
