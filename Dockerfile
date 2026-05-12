@@ -3,7 +3,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
 WORKDIR /src
 COPY . ./
-RUN dotnet restore Jellyfin.sln && dotnet publish Jellyfin.Server/Jellyfin.Server.csproj -c Release -o /app/publish --no-restore
+RUN dotnet restore Jellyfin.sln && dotnet publish Jellyfin.Server/Jellyfin.Server.csproj -c Release -r linux-x64 --self-contained true -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -23,10 +23,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libgl1-mesa-glx \
     && rm -rf /var/lib/apt/lists/*
 RUN groupadd -r jellyfin && useradd -r -g jellyfin jellyfin
-WORKDIR /config
+WORKDIR /app
 COPY --from=builder /app/publish ./
-RUN mkdir -p /cache && chown -R jellyfin:jellyfin /config /cache
+RUN mkdir -p /config /cache && chown -R jellyfin:jellyfin /app /config /cache
 USER jellyfin
+ENV JELLYFIN_CACHE_DIR=/cache
+ENV JELLYFIN_CONFIG_DIR=/config
+ENV JELLYFIN_DATA_DIR=/config
+ENV JELLYFIN_LOG_DIR=/config/log
+ENV JELLYFIN_WEB_DIR=/app/jellyfin-web
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
 EXPOSE 8096 8920
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD curl -f http://localhost:8096/health || exit 1
-ENTRYPOINT ["dotnet", "jellyfin.dll"]
+ENTRYPOINT ["/app/jellyfin"]
