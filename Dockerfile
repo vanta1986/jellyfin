@@ -1,9 +1,10 @@
 # Jellyfin Docker Image
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
-WORKDIR /src
-COPY . ./
-RUN dotnet restore Jellyfin.sln -r linux-x64 && dotnet publish Jellyfin.Server/Jellyfin.Server.csproj -c Release -r linux-x64 --self-contained true -o /app/publish --no-restore
+WORKDIR /repo
+COPY . .
+ENV DOTNET_CLI_TELEMETRY_OPTOUT=1
+RUN dotnet publish Jellyfin.Server --disable-parallel -c Release --self-contained true --runtime linux-x64 -o /app/publish "-p:DebugSymbols=false;DebugType=none"
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -24,17 +25,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 RUN groupadd -r jellyfin && useradd -r -g jellyfin jellyfin
 WORKDIR /app
-COPY --from=builder /app/publish ./
+COPY --from=builder /app/publish /app/
 RUN mkdir -p /config /cache && chown -R jellyfin:jellyfin /app /config /cache
 USER jellyfin
 ENV JELLYFIN_CACHE_DIR=/cache
 ENV JELLYFIN_CONFIG_DIR=/config
 ENV JELLYFIN_DATA_DIR=/config
 ENV JELLYFIN_LOG_DIR=/config/log
-ENV JELLYFIN_WEB_DIR=/app/jellyfin-web
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 EXPOSE 8096 8920
-HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 CMD curl -f http://localhost:8096/health || exit 1
-ENTRYPOINT ["/app/jellyfin"]
+HEALTHCHECK --interval=30s --timeout=30s --start-period=10s --retries=3 CMD curl -Lk http://localhost:8096/health || exit 1
+ENTRYPOINT ["/app/jellyfin", \
+    "--datadir", "/config", \
+    "--cachedir", "/cache"]
