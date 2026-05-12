@@ -3,7 +3,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS builder
 WORKDIR /src
 COPY . ./
-RUN dotnet restore Jellyfin.sln && dotnet publish Jellyfin.Server/Jellyfin.Server.csproj -c Release -r linux-x64 --self-contained true -o /app/publish --no-restore
+RUN dotnet restore Jellyfin.sln -r linux-x64 && dotnet publish Jellyfin.Server/Jellyfin.Server.csproj -c Release -r linux-x64 --self-contained true -o /app/publish --no-restore
 
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 RUN apt-get update && apt-get install -y --no-install-recommends \
